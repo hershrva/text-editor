@@ -3,9 +3,6 @@ const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
 
-
-const path = require('path');
-
 module.exports = () => {
   return {
     mode: 'development',
@@ -15,27 +12,24 @@ module.exports = () => {
       header: './src/js/header.js',
     },
     output: {
-      filename: 'jate.bundle.js',
+      filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-
       new HtmlWebpackPlugin({
-        template: './src/index.html', 
-        filename: 'index.html', 
+        template: './index.html',
+        title: 'J.A.T.E',
       }),
-
       new InjectManifest({
         swSrc: './src-sw.js',
-        swDest: 'src-sw.js',
+        swDest: 'sw.js',
       }),
-
       new WebpackPwaManifest({
         fingerprints: false,
         inject: true,
-        name: 'Contact Cards',
-        short_name: 'Contact',
-        description: 'Never forget your contacts!',
+        name: 'Just Another Text Editor',
+        short_name: 'J.A.T.E',
+        description: 'Lets have functionality to edit your text.',
         background_color: '#225ca3',
         theme_color: '#225ca3',
         start_url: './',
@@ -49,11 +43,20 @@ module.exports = () => {
         ],
       }),
     ],
-
+    devtool: 'eval-source-map', // Source maps for easier debugging
+    optimization: {
+      minimize: false, // Disable code minification
+      splitChunks: {
+        chunks: 'all',
+      },
+    },
     module: {
       rules: [
         // Add your Webpack rules here
-        // For example, to process JavaScript files with Babel:
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
         {
           test: /\.js$/,
           exclude: /node_modules/,
